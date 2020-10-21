@@ -1,7 +1,7 @@
 
 # For Math Wallet DAPP Developer
 
-## Using Math Wallet HBTCChain JS API
+## Using Math Wallet HBTC Chain JS API
 
 
 ```
