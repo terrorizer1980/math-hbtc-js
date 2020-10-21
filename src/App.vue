@@ -97,8 +97,7 @@ export default {
       return response.result;
     },
     requestSignature() {
-      this.provider
-        .getAccountInfo()
+      this.getAccountInfo()
         .then((chainAccount) => {
           const transaction = {
             chain_id: this.network.chainId,
