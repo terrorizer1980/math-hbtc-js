@@ -54,7 +54,7 @@
                                 text
                                 small
                                 color="primary"
-                                @click="sendAction"
+                                @click="sendAction(asset)"
                                 >Send</v-btn
                               ></template
                             ><template v-else
@@ -162,7 +162,21 @@ export default {
       idenity: null,
     };
   },
+  mounted() {
+    setInterval(() => {
+      if (this.idenity) {
+        this.setChainAssetsFromRPC(this.idenity.account);
+      }
+    }, 5000);
+  },
   methods: {
+    randomOrderId() {
+      var orderId = "";
+      for (let index = 0; index < 4; index++) {
+        orderId = orderId + Math.floor(Math.random() * (9999 - 1000)) + 1000;
+      }
+      return orderId;
+    },
     getChainAssets(index) {
       return this.idenity ? this.chains[index].assets : [];
     },
@@ -210,13 +224,13 @@ export default {
         this.idenity = null;
       });
     },
-    sendAction() {
+    sendAction(asset) {
       this.requestSignature(
         SendMessage(
           this.idenity.account,
           "HBChDYdRX6LkyrmBABdgFthQsQw4h7kVWtLS",
-          "100000000000000000",
-          "hbc"
+          "10000000000000000000",
+          asset.symbol.toLowerCase()
         )
       );
     },
@@ -226,7 +240,7 @@ export default {
           this.idenity.account,
           this.idenity.account,
           this.chains[this.selectedChainIndex].name.toLowerCase(),
-          "a566d5dc-193c-456d-85ec-62e91c522079"
+          this.randomOrderId()
         )
       );
     },
@@ -237,7 +251,7 @@ export default {
           "0xE0c21C6E53637a7FD02eceB8a458c16FF117948F",
           "100000000000000",
           "10000",
-          "a566d5dc-193c-456d-85ec-62e91c522074"
+          this.randomOrderId()
         )
       );
     },
@@ -266,7 +280,6 @@ export default {
           window.mathExtension
             .requestSignature(transaction)
             .then((signature) => {
-              console.log(signature);
               // Broadcast
               const broadcatTx = {
                 msg: transaction.msgs,
@@ -280,6 +293,7 @@ export default {
                   "Content-Type": "text/plain",
                 },
               };
+              console.log(JSON.stringify({ tx: broadcatTx, mode: "block" }));
               this.provider
                 .post("/api/v1/txs", null, opts)
                 .then((response2) => {
