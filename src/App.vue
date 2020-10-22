@@ -228,7 +228,7 @@ export default {
       this.requestSignature(
         SendMessage(
           this.idenity.account,
-          "HBChDYdRX6LkyrmBABdgFthQsQw4h7kVWtLS",
+          "HBCWbBg9EeN7ssSjhaU961e7DtYJQmANhms6",
           "10000000000000000000",
           asset.symbol.toLowerCase()
         )
@@ -261,6 +261,7 @@ export default {
     requestSignature(msg) {
       this.rpc_getAccountInfo(this.idenity.account)
         .then((chainAccount) => {
+          console.log(chainAccount);
           const transaction = {
             chain_id: this.network.chainId,
             fee: {
@@ -293,15 +294,13 @@ export default {
                   "Content-Type": "text/plain",
                 },
               };
-              console.log(JSON.stringify({ tx: broadcatTx, mode: "block" }));
               this.provider
                 .post("/api/v1/txs", null, opts)
                 .then((response2) => {
-                  console.log(response2);
                   alert("Success");
                 })
                 .catch((err2) => {
-                  console.log(err2);
+                  alert(err2.response.data.error);
                 });
             })
             .catch((e) => {
